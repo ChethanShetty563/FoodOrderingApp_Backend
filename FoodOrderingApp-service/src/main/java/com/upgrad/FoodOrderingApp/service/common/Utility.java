@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 public class Utility {
 
     public boolean isValidContact(String contactNumber){
-        Pattern p = Pattern.compile("(0/91)?[7-9][0-9]{9}");
+        Pattern p = Pattern.compile("\\A[0-9]{10}\\z");
         Matcher m = p.matcher(contactNumber);
         return (m.find() && m.group().equals(contactNumber));
     }
@@ -23,37 +23,22 @@ public class Utility {
     }
 
     public boolean isValidPassword(String password){
-        Boolean lowerCase = false;
-        Boolean upperCase = false;
-        Boolean number = false;
-        Boolean specialCharacters = false;
+        String regex = "^(?=.*[0-9])"
+                + "(?=.*[A-Z])"
+                + "(?=.*[#@$%&*!^])"
+                + "(?=\\S+$).{8,20}$";
 
-        if(password.length() < 8){
-            return false;
-        }
+        // Compile the ReGex
+        Pattern p = Pattern.compile(regex);
 
-        if(password.matches("(?=.*[0-9]).*")){
-            number = true;
-        }
+        // Pattern class contains matcher() method
+        // to find matching between given password
+        // and regular expression.
+        Matcher m = p.matcher(password);
 
-        if(password.matches("(?=.*[a-z]).*")){
-            lowerCase = true;
-        }
-        if(password.matches("(?=.*[A-Z]).*")){
-            upperCase = true;
-        }
-        if(password.matches("(?=.*[#@$%&*!^]).*")){
-            specialCharacters = true;
-        }
-
-        if(lowerCase && upperCase){
-            if(specialCharacters && number){
-                return true;
-            }
-        }else{
-            return false;
-        }
-        return false;
+        // Return if the password
+        // matched the ReGex
+        return m.matches();
     }
 
     public boolean isValidSignupRequest (CustomerEntity customerEntity)throws SignUpRestrictedException {
